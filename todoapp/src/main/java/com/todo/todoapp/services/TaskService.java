@@ -2,6 +2,7 @@ package com.todo.todoapp.services;
 
 import com.todo.todoapp.models.Task;
 import com.todo.todoapp.repository.TaskRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> getAlltasks() {
+    public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
@@ -44,5 +45,16 @@ public class TaskService {
         Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid task ID:" + id));
         task.setTitle(title);
         taskRepository.save(task);
+    }
+
+    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
+    public void deleteExpiredTasks() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Task> expiredTasks = taskRepository.findAllByReminderDateTimeBeforeAndCompleted(now, true);
+
+        if (!expiredTasks.isEmpty()) {
+            taskRepository.deleteAll(expiredTasks);
+            System.out.println("Deleted expired tasks: " + expiredTasks.size());
+        }
     }
 }
