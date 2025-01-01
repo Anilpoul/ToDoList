@@ -2,12 +2,15 @@ package com.todo.todoapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-public class TodoappApplication {
+@EnableScheduling
+public class TodoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TodoappApplication.class, args);
+		SpringApplication.run(TodoApplication.class, args);
 	}
+
 
 }
